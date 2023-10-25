@@ -2,13 +2,13 @@ var mongoose = require('mongoose');
 
 var teacherSchema = new mongoose.Schema({
     name: {
-        type: string,
+        type: String,
         required: true
     }, 
     designation: {
-        type: string,
+        type: String,
         required: true
     }
 });
 
-module.export = mongoose.model('Teacher', teacherSchema);
+module.exports = mongoose.model('Teacher', teacherSchema);

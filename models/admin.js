@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 
 var adminSchema = new mongoose.Schema({
     name: {
-        type: string,
+        type: String,
         required: true
     }
 });
 
-module.export = mongoose.model('Admin', adminSchema);
+module.exports = mongoose.model('Admin', adminSchema);

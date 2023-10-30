@@ -133,12 +133,8 @@ router.put("/assignstoc/:sid/:cid", function (req, res, next) {
     });
 });
 
-router.put("/assignttoc/:cid:tid", function (req, res, next) {
-  res.json("Assign teacher to class");
-});
-
 router.put("/editteacher/:id", function (req, res, next) {
-    Teacher.findOneAndUpdate({ id: req.params.id }, { name:req.body.name, designation:req.body.designation})
+    Teacher.findOneAndUpdate({ _id: req.params.id }, { name:req.body.name, designation:req.body.designation})
     .then((result) => {
       res.json(result);
     })
@@ -148,7 +144,13 @@ router.put("/editteacher/:id", function (req, res, next) {
 });
 
 router.put("/editstudent/:id", function (req, res, next) {
-  res.json("Edit student info");
+  Student.findOneAndUpdate({ _id: req.params.id }, { name:req.body.name, rollno:req.body.rollno})
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    res.json(err);
+  });
 });
 
 // Delete Routes
@@ -157,11 +159,18 @@ router.delete("/delclass/:id", function (req, res, next) {
 });
 
 router.delete("/delteacher/:id", function (req, res, next) {
-  res.json("Delete a Teacher");
+  Teacher.findByIdAndDelete({_id:req.params.id})
+    .exec()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 router.delete("/delstudent/:id", function (req, res, next) {
-  Student.deleteOne({_id:req.params.id})
+  Student.findByIdAndDelete({_id:req.params.id})
     .exec()
     .then((result) => {
       res.json(result);

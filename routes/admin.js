@@ -65,7 +65,7 @@ router.get("/students/:id", function (req, res, next) {
 });
 
 router.get("/teachers/:id", function (req, res, next) {
-  Teacher.find({_id:req.params.id}).populate('teacher').populate('student.id')
+  Teacher.find({_id:req.params.id})
   .exec()
   .then((result) => {
     res.json(result);
@@ -155,8 +155,14 @@ router.put("/editstudent/:id", function (req, res, next) {
 
 // Delete Routes
 router.delete("/delclass/:id", function (req, res, next) {
-  res.json("Delete a class");
-});
+  Class.findByIdAndDelete({_id:req.params.id})
+  .exec()
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    console.log(err);
+  });});
 
 router.delete("/delteacher/:id", function (req, res, next) {
   Teacher.findByIdAndDelete({_id:req.params.id})

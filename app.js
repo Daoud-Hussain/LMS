@@ -16,7 +16,7 @@ const { log } = require("console");
 var app = express();
 
 mongoose
-  .connect("mongodb:127.0.0.1/lms")
+  .connect("mongodb://0.0.0.0:27017/lms")
   .then((db) => {
     console.log("Database Connected");
   })

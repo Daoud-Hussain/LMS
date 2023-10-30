@@ -43,15 +43,36 @@ router.get("/teachers", function (req, res, next) {
 });
 
 router.get("/classes/:id", function (req, res, next) {
-  res.json("Data of specific Class");
+    Class.find({_id:req.params.id}).populate('teacher').populate('students.sid')
+    .exec()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 router.get("/students/:id", function (req, res, next) {
-  res.json("Data of specific Student");
+    Student.find({_id:req.params.id})
+    .exec()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 router.get("/teachers/:id", function (req, res, next) {
-  res.json("Data of specific Teacher");
+  Teacher.find({_id:req.params.id}).populate('teacher').populate('student.id')
+  .exec()
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 });
 
 // Post Routers
@@ -76,12 +97,18 @@ router.post("/addstudent", function (req, res, next) {
 });
 
 router.post("/addteacher", function (req, res, next) {
-  res.json("Add Teacher");
+    Teacher.create(req.body)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 // Put Routers
-router.put("/assignttoc/:cid:tid", function (req, res, next) {
-  Class.findOneAndUpdate({ id: req.params.cid }, { teacher: req.params.tid })
+router.put("/assignttoc/:tid/:cid", function (req, res, next) {
+  Class.findOneAndUpdate({ _id: req.params.cid }, { teacher: req.params.tid })
     .then((result) => {
       res.json(result);
     })
@@ -90,10 +117,13 @@ router.put("/assignttoc/:cid:tid", function (req, res, next) {
     });
 });
 
-router.put("/assignstoc/:cid:tid", function (req, res, next) {
-  Student.findOneAndUpdate({ id: req.params.cid }, 
-    { $push 
-    
+router.put("/assignstoc/:sid/:cid", function (req, res, next) {
+  Class.findOneAndUpdate({ _id: req.params.cid }, 
+    { $push: {
+        students: {
+            sid:req.params.sid
+        }
+    }
     })
     .then((result) => {
       res.json(result);
@@ -108,7 +138,13 @@ router.put("/assignttoc/:cid:tid", function (req, res, next) {
 });
 
 router.put("/editteacher/:id", function (req, res, next) {
-  res.json("Edit Teacher info");
+    Teacher.findOneAndUpdate({ id: req.params.id }, { name:req.body.name, designation:req.body.designation})
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
 });
 
 router.put("/editstudent/:id", function (req, res, next) {
@@ -125,7 +161,7 @@ router.delete("/delteacher/:id", function (req, res, next) {
 });
 
 router.delete("/delstudent/:id", function (req, res, next) {
-  Student.delete()
+  Student.deleteOne({_id:req.params.id})
     .exec()
     .then((result) => {
       res.json(result);
